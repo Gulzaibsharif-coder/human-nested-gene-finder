@@ -1,0 +1,2 @@
+pandas>=2.0,<3.0
+pyranges>=0.1.0
