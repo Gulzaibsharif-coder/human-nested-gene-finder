@@ -1,0 +1,17 @@
+data/
+results/introns.csv
+results/genes.csv
+results/nested_genes.csv
+results/nested_genes_enriched.csv
+__pycache__/
+*.pyc
+EO
+git status --short
+cat > .gitignore <<'EOF'
+data/
+results/introns.csv
+results/genes.csv
+results/nested_genes.csv
+results/nested_genes_enriched.csv
+__pycache__/
+*.pyc

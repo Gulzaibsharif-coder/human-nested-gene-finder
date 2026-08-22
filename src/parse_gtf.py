@@ -98,3 +98,7 @@ if __name__ == "__main__":
     print("Genes:", len(genes))
     print("Transcripts:", len(transcripts))
     print("Exons:", len(exons))
+
+# Save parsed gene records for downstream analysis
+genes.to_csv("results/genes.csv", index=False)
+print("Saved: results/genes.csv")
