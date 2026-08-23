@@ -1,0 +1,114 @@
+name: Refresh Nested Gene Dataset
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install BEDTools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bedtools
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run fresh nested-gene analysis
+        run: |
+          python scripts/generate_fresh_list_bedtools.py
+
+      - name: Validate generated dataset
+        run: |
+          python - <<'PY'
+          import pandas as pd
+
+          file = "fresh_data/nested_genes_fresh.csv"
+          df = pd.read_csv(file)
+
+          if len(df) == 0:
+              raise SystemExit("ERROR: generated dataset is empty")
+
+          if df.duplicated().sum() != 0:
+              raise SystemExit("ERROR: exact duplicate rows detected")
+
+          if df.duplicated(
+              ["host_gene_id", "nested_gene_id"]
+          ).sum() != 0:
+              raise SystemExit("ERROR: duplicate host/nested pairs detected")
+
+          valid = (
+              (df["intron_start"] <= df["nested_start"])
+              & (df["intron_end"] >= df["nested_end"])
+              & (df["host_gene_id"] != df["nested_gene_id"])
+          )
+
+          if not valid.all():
+              raise SystemExit("ERROR: invalid genomic coordinates detected")
+
+          print(f"Validated relationships: {len(df):,}")
+          print("Validation passed.")
+
+          PY
+
+      - name: Copy fresh dataset to website
+        run: |
+          mkdir -p web/data
+
+          cp fresh_data/nested_genes_fresh.csv \
+             web/data/nested_genes_fresh.csv
+
+          cp fresh_data/metadata.json \
+             web/data/fresh_metadata.json
+
+          python - <<'PY'
+          import pandas as pd
+
+          df = pd.read_csv(
+              "fresh_data/nested_genes_fresh.csv"
+          )
+
+          df.to_json(
+              "web/data/nested_genes_fresh.json",
+              orient="records"
+          )
+
+          print(
+              f"Website dataset updated: {len(df):,} relationships"
+          )
+          PY
+
+      - name: Commit refreshed dataset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            fresh_data \
+            web/data/nested_genes_fresh.csv \
+            web/data/nested_genes_fresh.json \
+            web/data/fresh_metadata.json
+
+          if git diff --cached --quiet; then
+            echo "No dataset changes detected."
+          else
+            git commit -m "Refresh nested gene dataset"
+            git push
+          fi

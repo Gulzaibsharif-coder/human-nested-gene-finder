@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Human Nested Gene Finder — searchable GRCh38 GENCODE nested-gene relationships.">
+  <title>Human Nested Gene Finder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">NG</div>
+    <div>
+      <div class="brand-title">Nested Gene Finder</div>
+      <div class="brand-subtitle">Human • GRCh38 • GENCODE 49</div>
+    </div>
+  </div>
+
+  <nav>
+    <a href="#search">Search</a>
+    <a href="#results">Results</a>
+    <a href="#method">Method</a>
+    <a href="https://github.com/Gulzaibsharif-coder/human-nested-gene-finder"
+       target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">BIOINFORMATICS RESEARCH TOOL</span>
+
+    <h1>
+      Human Nested<br>
+      <span>Gene Finder</span>
+    </h1>
+
+    <p class="hero-text">
+      Search genes whose complete genomic coordinates are contained
+      within intronic regions reconstructed from annotated human transcripts.
+    </p>
+
+    <div class="hero-badges">
+      <span>GRCh38</span>
+      <span>GENCODE Release 49</span>
+      <span>31,300 relationships</span>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <div class="hero-card-label">Current dataset</div>
+
+    <div class="hero-number" id="heroRelationships">31,300</div>
+    <div class="hero-caption">validated host–nested relationships</div>
+
+    <div class="hero-rule"></div>
+
+    <div class="mini-row">
+      <span>Host genes</span>
+      <strong id="heroHosts">14,324</strong>
+    </div>
+
+    <div class="mini-row">
+      <span>Nested genes</span>
+      <strong id="heroNested">26,894</strong>
+    </div>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Genes</div>
+    <div class="stat-value" id="statGenes">78,691</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Transcripts</div>
+    <div class="stat-value" id="statTranscripts">507,365</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Exons</div>
+    <div class="stat-value" id="statExons">3,673,949</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Introns</div>
+    <div class="stat-value" id="statIntrons">3,166,584</div>
+  </div>
+</section>
+
+<section class="search-section" id="search">
+
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">01 / EXPLORE</span>
+      <h2>Search nested-gene relationships</h2>
+      <p>
+        Search by gene name, Ensembl ID, chromosome, or genomic coordinates.
+      </p>
+    </div>
+
+    <button class="button button-gold" id="resetButton">
+      Reset filters
+    </button>
+  </div>
+
+  <div class="search-card">
+
+    <div class="search-main">
+      <label for="searchInput">Search</label>
+
+      <div class="search-box">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="e.g. MIR6859-1, DDX11L16, ENSG00000278267, chr1:17000-18000"
+          autocomplete="off"
+        >
+        <button id="searchButton" class="search-button">Search</button>
+      </div>
+
+      <div class="search-help">
+        Examples:
+        <button class="example-query" data-query="MIR6859-1">MIR6859-1</button>
+        <button class="example-query" data-query="DDX11L16">DDX11L16</button>
+        <button class="example-query" data-query="chr1:17000-18000">chr1:17000-18000</button>
+      </div>
+    </div>
+
+    <div class="filters">
+
+      <div class="filter-field">
+        <label for="chromosomeFilter">Chromosome</label>
+        <select id="chromosomeFilter">
+          <option value="">All chromosomes</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="hostTypeFilter">Host gene type</label>
+        <select id="hostTypeFilter">
+          <option value="">All host types</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="nestedTypeFilter">Nested gene type</label>
+        <select id="nestedTypeFilter">
+          <option value="">All nested types</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="directionFilter">Relationship</label>
+        <select id="directionFilter">
+          <option value="both">Both</option>
+          <option value="host">Host → Nested</option>
+          <option value="nested">Nested → Host</option>
+        </select>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="results-section" id="results">
+
+  <div class="results-toolbar">
+    <div>
+      <span class="section-kicker">02 / RESULTS</span>
+      <h2>Matching relationships</h2>
+      <div class="result-count" id="resultCount">Loading dataset…</div>
+    </div>
+
+    <button class="button button-rose" id="downloadButton">
+      Download current results
+    </button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nested gene</th>
+          <th>Type</th>
+          <th>Host gene</th>
+          <th>Host type</th>
+          <th>Chr</th>
+          <th>Nested coordinates</th>
+          <th>Intron coordinates</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button class="page-button" id="prevPage">← Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button class="page-button" id="nextPage">Next →</button>
+  </div>
+
+</section>
+
+<section class="insight-section">
+
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">03 / DATASET</span>
+      <h2>Observed architecture</h2>
+      <p>Summary statistics from the validated dataset.</p>
+    </div>
+  </div>
+
+  <div class="insight-grid">
+
+    <div class="insight-card">
+      <div class="insight-icon rose">01</div>
+      <div class="insight-title">Coordinate validation</div>
+      <div class="insight-number">31,300 / 31,300</div>
+      <p>
+        All reported relationships satisfy the implemented
+        genomic containment rule.
+      </p>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-icon gold">02</div>
+      <div class="insight-title">Unique host genes</div>
+      <div class="insight-number">14,324</div>
+      <p>
+        Host genes participating in at least one detected
+        nested relationship.
+      </p>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-icon neutral">03</div>
+      <div class="insight-title">Unique nested genes</div>
+      <div class="insight-number">26,894</div>
+      <p>
+        Distinct nested genes represented in the current
+        GENCODE-derived relationship set.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="method-section" id="method">
+  <span class="section-kicker">04 / METHOD</span>
+  <h2>How the finder works</h2>
+
+  <div class="method-grid">
+
+    <div class="method-step">
+      <span>01</span>
+      <h3>Parse GENCODE</h3>
+      <p>
+        Genes, transcripts and exons are extracted from the
+        GENCODE human annotation.
+      </p>
+    </div>
+
+    <div class="method-step">
+      <span>02</span>
+      <h3>Build introns</h3>
+      <p>
+        Introns are reconstructed from consecutive exon
+        boundaries within transcripts.
+      </p>
+    </div>
+
+    <div class="method-step">
+      <span>03</span>
+      <h3>Find containment</h3>
+      <p>
+        Gene intervals are compared with intron intervals
+        on the same chromosome.
+      </p>
+    </div>
+
+    <div class="method-step">
+      <span>04</span>
+      <h3>Validate</h3>
+      <p>
+        Relationships are checked for coordinate validity
+        and duplicate host–nested pairs.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="method-note">
+    <strong>Scientific framing:</strong>
+    These relationships describe computational genomic-coordinate containment.
+    They do not by themselves establish functional regulation, evolutionary
+    interaction, or biological causality.
+  </div>
+
+</section>
+
+<footer>
+  <div>
+    <strong>Human Nested Gene Finder</strong>
+    <span>GRCh38 • GENCODE Release 49</span>
+  </div>
+
+  <div>
+    Built as a reproducible bioinformatics research tool.
+  </div>
+</footer>
+
+</main>
+
+<div class="modal hidden" id="detailsModal">
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">×</button>
+
+    <span class="section-kicker">RELATIONSHIP DETAILS</span>
+    <h2 id="modalTitle">Nested Gene</h2>
+
+    <div class="detail-grid" id="modalContent"></div>
+
+    <div class="modal-actions">
+      <button class="button button-gold" id="copyIdButton">
+        Copy nested ID
+      </button>
+      <button class="button button-rose" id="downloadRowButton">
+        Download row
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

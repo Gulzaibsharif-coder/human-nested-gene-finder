@@ -15,3 +15,11 @@ results/nested_genes.csv
 results/nested_genes_enriched.csv
 __pycache__/
 *.pyc
+
+!web/
+!web/data/
+!web/data/nested_genes.json
+!web/data/stats.json
+
+fresh_data/*.gtf.gz
+fresh_data/*.bed

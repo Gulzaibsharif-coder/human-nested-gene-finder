@@ -1,0 +1,13 @@
+{
+  "assembly": "GRCh38.p14",
+  "annotation": "GENCODE Release 50",
+  "ensembl_release": 116,
+  "source_url": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_50/gencode.v50.annotation.gtf.gz",
+  "relationships": 32107,
+  "unique_host_genes": 14616,
+  "unique_nested_genes": 27433,
+  "chromosomes": 24,
+  "tool": "BEDTools intersect",
+  "containment_fraction": "1.0",
+  "generated_by": "scripts/generate_fresh_list_bedtools.py"
+}

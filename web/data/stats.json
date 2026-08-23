@@ -1,0 +1,11 @@
+{
+  "relationships": 31300,
+  "host_genes": 14324,
+  "nested_genes": 26894,
+  "chromosomes": 24,
+  "genes": 78691,
+  "transcripts": 507365,
+  "exons": 3673949,
+  "introns": 3166584,
+  "valid_coordinates": 31300
+}
